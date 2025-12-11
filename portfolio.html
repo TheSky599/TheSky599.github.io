@@ -7,15 +7,18 @@
     <style>
         /* --- 1. VARIABLES & RESET --- */
         :root {
-            --bg-color: #0f172a;       /* Fond très sombre */
-            --card-bg: #1e293b;        /* Fond des cartes */
-            --card-hover: #2c3e50;     /* Fond au survol */
-            --primary: #38bdf8;        /* Bleu principal */
-            --accent: #818cf8;         /* Violet accent */
-            --text-main: #f1f5f9;      /* Texte clair */
-            --text-muted: #94a3b8;     /* Texte grisé */
-            --nav-bg: rgba(15, 23, 42, 0.95); /* Fond menu semi-transparent */
+            --bg-color: #0f172a;       
+            --card-bg: #1e293b;        
+            --card-hover: #2c3e50;     
+            --primary: #38bdf8;        
+            --accent: #818cf8;         
+            --text-main: #f1f5f9;      
+            --text-muted: #94a3b8;     
+            --nav-bg: rgba(15, 23, 42, 0.95);
             --font-main: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            
+            /* VARIABLE DYNAMIQUE */
+            --hue-rotation: 0deg; 
         }
 
         * {
@@ -25,7 +28,9 @@
         }
 
         html {
-            scroll-behavior: smooth; /* Défilement fluide natif */
+            scroll-behavior: smooth;
+            filter: hue-rotate(var(--hue-rotation));
+            transition: filter 0.3s ease; 
         }
 
         body {
@@ -33,8 +38,8 @@
             background-color: var(--bg-color);
             color: var(--text-main);
             line-height: 1.6;
-            overflow-x: hidden; /* Empêche le scroll horizontal */
-            padding-top: 80px;  /* Espace pour ne pas cacher le haut sous le menu */
+            overflow-x: hidden;
+            padding-top: 80px;
         }
 
         a { text-decoration: none; color: inherit; transition: 0.3s; }
@@ -48,7 +53,7 @@
             width: 100%;
             background-color: var(--nav-bg);
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            z-index: 1000; /* Toujours au dessus */
+            z-index: 1000;
             padding: 15px 0;
             backdrop-filter: blur(5px);
         }
@@ -79,7 +84,6 @@
 
         .nav-links a:hover { color: var(--primary); }
 
-        /* Soulignement au survol (sauf bouton contact) */
         .nav-links a:not(.contact-btn)::after {
             content: '';
             position: absolute;
@@ -92,7 +96,6 @@
         }
         .nav-links a:not(.contact-btn):hover::after { width: 100%; }
 
-        /* Style bouton Contact */
         .contact-btn {
             border: 1px solid var(--primary);
             padding: 5px 15px !important;
@@ -115,6 +118,9 @@
         section {
             padding: 90px 0;
             border-bottom: 1px solid rgba(255,255,255,0.02);
+            /* Important pour le z-index dynamique */
+            position: relative; 
+            z-index: 1;
         }
 
         .section-title {
@@ -132,7 +138,6 @@
             justify-content: center;
             align-items: center;
             text-align: center;
-            /* Petit effet de fond subtil */
             background: radial-gradient(circle at center, #1e293b 0%, transparent 60%);
         }
 
@@ -140,7 +145,6 @@
             font-size: 4rem;
             font-weight: bold;
             margin-bottom: 10px;
-            /* Dégradé sur le texte */
             background: linear-gradient(to right, #fff, var(--text-muted));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -150,35 +154,51 @@
             font-size: 1.5rem;
             color: var(--primary);
             font-family: monospace;
-            min-height: 1.6em; /* Évite le saut quand vide */
+            min-height: 1.6em;
         }
 
-        /* --- 5. COMPOSANTS (TAGS & TIMELINE) --- */
-        
-        /* Tags */
+        /* --- 5. COMPOSANTS (TAGS DRAGGABLE) --- */
         .skills-wrapper {
             display: flex;
             justify-content: center;
             flex-wrap: wrap;
             gap: 15px;
         }
+
+        .tech-tag, .soft-tag {
+            padding: 8px 16px;
+            font-family: monospace;
+            
+            /* Curseur et positionnement */
+            cursor: grab;
+            position: relative; 
+            user-select: none;
+            touch-action: none;
+            transition: transform 0.05s linear; /* Très rapide pour suivre la souris */
+        }
+
+        /* Style actif quand on attrape */
+        .tech-tag:active, .soft-tag:active {
+            cursor: grabbing;
+            /* Une ombre pour donner l'effet de soulèvement */
+            box-shadow: 0 10px 20px rgba(0,0,0,0.5); 
+        }
+
         .tech-tag {
             background: rgba(56, 189, 248, 0.1);
             border: 1px solid var(--primary);
             color: var(--primary);
-            padding: 8px 16px;
             border-radius: 6px;
-            font-family: monospace;
         }
+        
         .soft-tag {
             background: rgba(129, 140, 248, 0.1);
             border: 1px solid var(--accent);
             color: var(--accent);
-            padding: 8px 16px;
             border-radius: 50px;
+            font-family: var(--font-main);
         }
 
-        /* Timeline (Parcours) */
         .timeline-box {
             border-left: 3px solid var(--card-bg);
             margin-left: 20px;
@@ -188,7 +208,7 @@
         .timeline-item::before {
             content: '';
             position: absolute;
-            left: -38px; /* Ajusté pour centrer sur la ligne */
+            left: -38px;
             top: 5px;
             width: 12px;
             height: 12px;
@@ -197,17 +217,17 @@
             box-shadow: 0 0 0 5px rgba(56, 189, 248, 0.2);
         }
 
-        /* --- 6. CARTES (PROJETS & EXP) --- */
+        /* --- 6. CARTES --- */
         .grid-container {
             display: grid;
-            grid-template-columns: 1fr 1fr; /* 2 colonnes strictes sur PC */
+            grid-template-columns: 1fr 1fr;
             gap: 30px;
         }
 
         .card-link {
             display: block;
             text-decoration: none;
-            height: 100%; /* Important pour que toute la zone soit cliquable */
+            height: 100%;
         }
 
         .card {
@@ -221,7 +241,6 @@
             flex-direction: column;
         }
 
-        /* Effet au survol du lien global */
         .card-link:hover .card, .card:hover {
             transform: translateY(-7px);
             background-color: var(--card-hover);
@@ -252,7 +271,7 @@
             align-self: flex-start;
         }
 
-        /* --- 7. CONTACT SECTION --- */
+        /* --- 7. CONTACT --- */
         .contact-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -283,9 +302,9 @@
             border-top: 1px solid #1e293b;
         }
 
-        /* --- 9. BOUTON RETOUR HAUT --- */
+        /* --- 9. ELEMENTS FLOTTANTS --- */
         #backToTop {
-            display: none; /* Masqué par défaut */
+            display: none;
             position: fixed;
             bottom: 30px;
             right: 30px;
@@ -305,6 +324,36 @@
             transform: scale(1.1);
         }
 
+        #clickCounter {
+            position: fixed;
+            bottom: 30px;
+            left: 30px;
+            z-index: 2000;
+            background-color: rgba(30, 41, 59, 0.9);
+            color: var(--primary);
+            padding: 12px 25px;
+            border-radius: 30px;
+            font-family: monospace;
+            font-weight: bold;
+            font-size: 1rem;
+            border: 2px solid var(--primary);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            cursor: pointer;
+            transition: 0.2s;
+            outline: none;
+            animation: popIn 0.5s ease-out;
+        }
+        
+        #clickCounter:hover {
+            background-color: var(--primary);
+            color: var(--bg-color);
+            transform: scale(1.05);
+        }
+        
+        #clickCounter:active {
+            transform: scale(0.95);
+        }
+
         /* --- 10. ANIMATIONS --- */
         .reveal {
             opacity: 0;
@@ -322,29 +371,37 @@
         }
         .hero-name { animation: fadeIn 1s ease-out; }
 
-        /* --- 11. RESPONSIVE (MOBILE) --- */
+        @keyframes popIn {
+            from { transform: scale(0); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        /* --- RESPONSIVE --- */
         @media screen and (max-width: 768px) {
-            .grid-container { grid-template-columns: 1fr; } /* 1 colonne sur mobile */
+            .grid-container { grid-template-columns: 1fr; }
             .hero-name { font-size: 2.5rem; }
             .nav-links { gap: 10px; font-size: 0.8rem; }
             #backToTop { bottom: 20px; right: 20px; padding: 10px; }
+            #clickCounter { bottom: 20px; left: 20px; font-size: 0.8rem; padding: 10px 15px; }
         }
     </style>
 </head>
 <body>
 
-    <button id="backToTop" title="Retour en haut">⬆</button>
+    <button id="backToTop" title="Retour vers le haut">⬆</button>
+    <button id="clickCounter">Clics : 0</button>
 
     <nav>
         <div class="nav-container">
             <ul class="nav-links">
-                <li><a href="#parcours">Parcours</a></li>
+                <li><a href="#top">Accueil</a></li>
+                <li><a href="#parcours">Formation</a></li>
                 <li><a href="#competences">Compétences</a></li>
                 <li><a href="#connaissances">Connaissances</a></li>
                 <li><a href="#interets">Intérêts</a></li>
                 <li><a href="#experiences">Expériences</a></li>
                 <li><a href="#projets">Projets</a></li>
-                <li><a href="#contact" class="contact-btn">Me Contacter</a></li>
+                <li><a href="#contact" class="contact-btn">Contact</a></li>
             </ul>
         </div>
     </nav>
@@ -361,16 +418,16 @@
 
     <section id="parcours" class="reveal">
         <div class="container">
-            [cite_start]<h2 class="section-title">Parcours Scolaire [cite: 7]</h2>
+            <h2 class="section-title">Parcours Scolaire</h2>
             <div class="timeline-box">
                 <div class="timeline-item">
                     <span style="color: var(--primary); font-weight:bold;">2024 - 2027</span>
-                    [cite_start]<h3>BUT Informatique (Parcours A) [cite: 8]</h3>
+                    <h3>BUT Informatique (Parcours A)</h3>
                     <p style="color: var(--text-muted);">IUT de Villeneuve-d'Ascq</p>
                 </div>
                 <div class="timeline-item">
                     <span style="color: var(--primary); font-weight:bold;">2023 - 2024</span>
-                    [cite_start]<h3>Baccalauréat Général [cite: 8]</h3>
+                    <h3>Baccalauréat Général</h3>
                     <p style="color: var(--text-muted);">Spécialités Mathématiques et NSI - Lycée Kernanec</p>
                 </div>
             </div>
@@ -379,56 +436,56 @@
 
     <section id="competences" style="background-color: #162033;" class="reveal">
         <div class="container">
-            [cite_start]<h2 class="section-title">Compétences (Savoir-être) [cite: 9]</h2>
+            <h2 class="section-title">Compétences Transversales</h2>
             <div class="skills-wrapper">
-                [cite_start]<span class="soft-tag">Ponctuel [cite: 10]</span>
-                [cite_start]<span class="soft-tag">Curieux [cite: 11]</span>
-                [cite_start]<span class="soft-tag">Motivé [cite: 12]</span>
-                [cite_start]<span class="soft-tag">Passionné par l'informatique [cite: 13]</span>
-                [cite_start]<span class="soft-tag">Envie d'apprendre [cite: 14]</span>
+                <span class="soft-tag">Ponctuel</span>
+                <span class="soft-tag">Curieux</span>
+                <span class="soft-tag">Motivé</span>
+                <span class="soft-tag">Passionné par l'informatique</span>
+                <span class="soft-tag">Envie d'apprendre</span>
             </div>
         </div>
     </section>
 
     <section id="connaissances" class="reveal">
         <div class="container">
-            [cite_start]<h2 class="section-title">Connaissances Informatique [cite: 28]</h2>
+            <h2 class="section-title">Connaissances Informatique</h2>
             <div class="skills-wrapper">
-                [cite_start]<span class="tech-tag">HTML / CSS [cite: 29]</span>
-                [cite_start]<span class="tech-tag">Java [cite: 30]</span>
-                [cite_start]<span class="tech-tag">Python [cite: 31]</span>
-                [cite_start]<span class="tech-tag">Pharo [cite: 32]</span>
-                [cite_start]<span class="tech-tag">Machine Virtuelle [cite: 33]</span>
-                [cite_start]<span class="tech-tag">Outils Numériques [cite: 34]</span>
+                <span class="tech-tag">HTML / CSS</span>
+                <span class="tech-tag">Java</span>
+                <span class="tech-tag">Python</span>
+                <span class="tech-tag">Pharo</span>
+                <span class="tech-tag">Machine Virtuelle</span>
+                <span class="tech-tag">Outils Numériques</span>
             </div>
         </div>
     </section>
 
     <section id="interets" style="background-color: #162033;" class="reveal">
         <div class="container">
-            [cite_start]<h2 class="section-title">Centres d'intérêts [cite: 15]</h2>
+            <h2 class="section-title">Centres d'intérêts</h2>
             <div class="skills-wrapper">
-                [cite_start]<span class="tech-tag" style="border-color: #475569; color: #cbd5e1;">Badminton [cite: 16]</span>
-                [cite_start]<span class="tech-tag" style="border-color: #475569; color: #cbd5e1;">Programmation [cite: 17]</span>
-                [cite_start]<span class="tech-tag" style="border-color: #475569; color: #cbd5e1;">Jeux vidéo [cite: 18]</span>
-                [cite_start]<span class="tech-tag" style="border-color: #475569; color: #cbd5e1;">Lecture et écriture [cite: 19]</span>
-                [cite_start]<span class="tech-tag" style="border-color: #475569; color: #cbd5e1;">Astronomie [cite: 20]</span>
+                <span class="tech-tag" style="border-color: #475569; color: #cbd5e1;">Badminton</span>
+                <span class="tech-tag" style="border-color: #475569; color: #cbd5e1;">Programmation</span>
+                <span class="tech-tag" style="border-color: #475569; color: #cbd5e1;">Jeux vidéo</span>
+                <span class="tech-tag" style="border-color: #475569; color: #cbd5e1;">Lecture et écriture</span>
+                <span class="tech-tag" style="border-color: #475569; color: #cbd5e1;">Astronomie</span>
             </div>
         </div>
     </section>
 
     <section id="experiences" class="reveal">
         <div class="container">
-            [cite_start]<h2 class="section-title">Expériences [cite: 21]</h2>
+            <h2 class="section-title">Expériences</h2>
             <div class="grid-container">
                 <div class="card">
                     <span class="card-type">Association</span>
-                    [cite_start]<h3>Vice-président d'une association informatique [cite: 22]</h3>
+                    <h3>Vice-président d'une association informatique</h3>
                     <p>Gestion d'équipe, organisation et responsabilités associatives.</p>
                 </div>
                 <div class="card">
                     <span class="card-type">Professionnel</span>
-                    [cite_start]<h3>Stage en laboratoire de recherche [cite: 26]</h3>
+                    <h3>Stage en laboratoire de recherche</h3>
                     <p>Découverte du monde de la recherche et immersion professionnelle.</p>
                 </div>
             </div>
@@ -442,7 +499,7 @@
                 
                 <a href="https://github.com/TheSky599/Bot-minage" target="_blank" class="card-link">
                     <div class="card">
-                        [cite_start]<span class="card-type">Projet Perso [cite: 25]</span>
+                        <span class="card-type">Projet Perso</span>
                         <h3>Bot Discord</h3>
                         <p>Un petit jeu interactif où l’objectif est de récolter des ressources pour évoluer son équipement.</p>
                         <span class="project-lang">Python</span>
@@ -469,7 +526,7 @@
 
                 <a href="https://gitlab.univ-lille.fr/iut-info/p3.01/2025-2026/groupe-5" target="_blank" class="card-link">
                     <div class="card">
-                        [cite_start]<span class="card-type">Projet Universitaire [cite: 24]</span>
+                        <span class="card-type">Projet Transverse</span>
                         <h3>Jeu de gestion</h3>
                         <p>Jeu réalisé en temps limité avec une équipe inconnue. Gestion de ressources, affichage dynamique en ASCII art.</p>
                         <span class="project-lang">Java</span>
@@ -487,17 +544,17 @@
                 <div class="contact-item">
                     <span class="contact-icon">📞</span>
                     <p>Téléphone</p>
-                    [cite_start]<a href="tel:+33602282011" class="contact-text">06 02 28 20 11 [cite: 3]</a>
+                    <a href="tel:+33602282011" class="contact-text">06 02 28 20 11</a>
                 </div>
                 <div class="contact-item">
                     <span class="contact-icon">📧</span>
                     <p>Email</p>
-                    [cite_start]<a href="mailto:antoineusa15962@gmail.com" class="contact-text">antoineusa15962@gmail.com [cite: 3]</a>
+                    <a href="mailto:antoineusa15962@gmail.com" class="contact-text">antoineusa15962@gmail.com</a>
                 </div>
                 <div class="contact-item">
                     <span class="contact-icon">📍</span>
                     <p>Adresse</p>
-                    [cite_start]<span class="contact-text" style="color: var(--text-main);">59650 Villeneuve-d'Ascq [cite: 2]</span>
+                    <span class="contact-text" style="color: var(--text-main);">59650 Villeneuve-d'Ascq</span>
                 </div>
             </div>
         </div>
@@ -505,16 +562,16 @@
 
     <footer>
         <div class="container">
-            [cite_start]<p>"Je ne perds jamais soit je gagne, soit j'apprends." [cite: 35]</p>
-            [cite_start]<p style="margin-top:10px; opacity:0.5;">- Nelson Mandela [cite: 37] -</p>
+            <p>"Je ne perds jamais soit je gagne, soit j'apprends."</p>
+            <p style="margin-top:10px; opacity:0.5;">- Nelson Mandela -</p>
         </div>
     </footer>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             
-            // --- 1. TYPE WRITER (Effet d'écriture) ---
-            const text = "Étudiant en Informatique"; // [cite: 5]
+            // --- TYPE WRITER ---
+            const text = "Étudiant en Informatique";
             const typingElement = document.getElementById('typing-text');
             let index = 0;
 
@@ -525,20 +582,17 @@
                     setTimeout(typeWriter, 100);
                 }
             }
-            typeWriter(); // Lancer l'animation
+            typeWriter();
 
-            // --- 2. BOUTON RETOUR EN HAUT ---
+            // --- BTN RETOUR HAUT ---
             const backToTopBtn = document.getElementById("backToTop");
-
             backToTopBtn.addEventListener('click', () => {
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             });
 
-            // --- 3. SCROLL MANAGEMENT (Reveal + Button Visibility) ---
+            // --- SCROLL REVEAL & BTN VISIBILITY ---
             const reveals = document.querySelectorAll(".reveal");
-
             function handleScroll() {
-                // Gestion de l'apparition des sections
                 const windowHeight = window.innerHeight;
                 const elementVisible = 100;
 
@@ -549,20 +603,117 @@
                     }
                 });
 
-                // Gestion de la visibilité du bouton "Haut de page"
                 if (window.scrollY > 300) {
                     backToTopBtn.style.display = "block";
                 } else {
                     backToTopBtn.style.display = "none";
                 }
             }
-
-            // Écouteur de scroll
             window.addEventListener('scroll', handleScroll);
-
-            // Appel initial pour afficher les éléments déjà visibles au chargement
             handleScroll();
+
+            // --- CLICS & COULEURS GLOBALES ---
+            let clicks = 0;
+            let hue = 0;
+            const counterBtn = document.getElementById('clickCounter');
+
+            document.addEventListener('click', (e) => {
+                // Incrémente le compteur
+                clicks++;
+                counterBtn.innerText = "Clics : " + clicks;
+
+                // Change la couleur
+                hue += 4; 
+                document.documentElement.style.setProperty('--hue-rotation', hue + 'deg');
+            });
+
+            // --- DRAG & DROP (CORRECTIF Z-INDEX) ---
+            const draggableItems = document.querySelectorAll('.tech-tag, .soft-tag');
+            let activeItem = null;
+            let initialX, initialY;
+            let currentX = 0, currentY = 0;
+            let xOffset = 0, yOffset = 0;
+
+            draggableItems.forEach(item => {
+                item.xOffset = 0; 
+                item.yOffset = 0;
+                item.addEventListener('mousedown', dragStart);
+                item.addEventListener('touchstart', dragStart, {passive: false});
+            });
+
+            document.addEventListener('mouseup', dragEnd);
+            document.addEventListener('mousemove', drag);
+            document.addEventListener('touchend', dragEnd);
+            document.addEventListener('touchmove', drag, {passive: false});
+
+            function dragStart(e) {
+                if (e.target.classList.contains('tech-tag') || e.target.classList.contains('soft-tag')) {
+                    activeItem = e.target;
+                    
+                    // Positions initiales
+                    if (e.type === "touchstart") {
+                        initialX = e.touches[0].clientX - activeItem.xOffset;
+                        initialY = e.touches[0].clientY - activeItem.yOffset;
+                    } else {
+                        initialX = e.clientX - activeItem.xOffset;
+                        initialY = e.clientY - activeItem.yOffset;
+                    }
+                    
+                    // IMPORTANT : Met l'élément au premier plan
+                    activeItem.style.zIndex = "9999"; 
+                    
+                    // IMPORTANT : Met la section parente au premier plan pour ne pas être cachée par la section suivante
+                    let parentSection = activeItem.closest('section');
+                    if(parentSection) {
+                        parentSection.style.zIndex = "500";
+                    }
+                }
+            }
+
+            function dragEnd(e) {
+                if (activeItem) {
+                    initialX = null;
+                    initialY = null;
+
+                    // Reset des z-index
+                    let parentSection = activeItem.closest('section');
+                    if(parentSection) {
+                        parentSection.style.zIndex = "";
+                    }
+                    activeItem.style.zIndex = "";
+                    
+                    activeItem = null;
+                }
+            }
+
+            function drag(e) {
+                if (activeItem) {
+                    e.preventDefault();
+                    
+                    if (e.type === "touchmove") {
+                        currentX = e.touches[0].clientX - initialX;
+                        currentY = e.touches[0].clientY - initialY;
+                    } else {
+                        currentX = e.clientX - initialX;
+                        currentY = e.clientY - initialY;
+                    }
+
+                    activeItem.xOffset = currentX;
+                    activeItem.yOffset = currentY;
+
+                    setTranslate(currentX, currentY, activeItem);
+                }
+            }
+
+            function setTranslate(xPos, yPos, el) {
+                el.style.transform = "translate3d(" + xPos + "px, " + yPos + "px, 0)";
+            }
         });
     </script>
 </body>
 </html>
+
+
+
+
+mettre les blocs en nuage autour de l'accueil
