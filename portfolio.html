@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio - Antoine USAL</title>
+    <style>
+        /* --- VARIABLES & RESET --- */
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --primary: #38bdf8;
+            --accent: #818cf8;
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+            --nav-bg: rgba(15, 23, 42, 0.95);
+            --font-main: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-main);
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            overflow-x: hidden;
+            padding-top: 70px; /* Espace pour la navbar fixe */
+        }
+
+        a { text-decoration: none; color: inherit; transition: 0.3s; }
+        ul { list-style: none; }
+
+        /* --- NAVIGATION BAR (NOUVEAU) --- */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background-color: var(--nav-bg);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            padding: 15px 0;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: center; /* Centré comme demandé */
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 25px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .nav-links a {
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            position: relative;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            color: var(--primary);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -5px;
+            left: 0;
+            background-color: var(--primary);
+            transition: width 0.3s;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* --- LAYOUT UTILITIES --- */
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        section {
+            padding: 90px 0; /* Un peu plus d'espace pour le scroll */
+            border-bottom: 1px solid rgba(255,255,255,0.02);
+        }
+
+        .section-title {
+            font-size: 2.2rem;
+            margin-bottom: 40px;
+            text-align: center;
+            color: var(--primary);
+        }
+
+        /* --- HEADER & HERO --- */
+        header {
+            min-height: 90vh; /* Ajusté */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background: radial-gradient(circle at center, #1e293b 0%, transparent 50%);
+        }
+
+        .hero-name {
+            font-size: 4rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            animation: fadeInDown 1s ease-out;
+            background: linear-gradient(to right, #fff, var(--text-muted));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-subtitle {
+            font-size: 1.5rem;
+            color: var(--primary);
+            margin-bottom: 20px;
+            font-family: monospace;
+        }
+
+        /* --- SECTIONS SPECIFIQUES --- */
+        
+        /* Tags (pour Compétences et Connaissances) */
+        .skills-wrapper {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .tech-tag {
+            background: rgba(56, 189, 248, 0.1);
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-family: monospace;
+        }
+
+        .soft-tag {
+            background: rgba(129, 140, 248, 0.1);
+            border: 1px solid var(--accent);
+            color: var(--accent);
+            padding: 10px 20px;
+            border-radius: 50px;
+        }
+
+        /* Cards (pour Expériences et Projets) */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 25px;
+        }
+        
+        .card {
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 15px;
+            transition: 0.3s;
+            border-left: 4px solid var(--primary);
+        }
+        
+        .card:hover { transform: translateY(-5px); box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+        .card h3 { margin-bottom: 10px; font-size: 1.3rem; }
+        .card-type { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); margin-bottom: 10px; display: block; }
+
+        /* Timeline (Parcours) */
+        .timeline-box {
+            border-left: 2px solid var(--card-bg);
+            margin-left: 20px;
+            padding-left: 30px;
+        }
+        .timeline-item {
+            position: relative;
+            margin-bottom: 40px;
+        }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -36px;
+            top: 5px;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--primary);
+            box-shadow: 0 0 0 5px rgba(56, 189, 248, 0.2);
+        }
+
+        /* Footer */
+        footer { text-align: center; padding: 50px 20px; background: #020617; }
+
+        /* --- ANIMATIONS --- */
+        @keyframes fadeInDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+        .reveal { opacity: 0; transform: translateY(30px); transition: all 0.6s ease-in-out; }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+
+        /* Mobile Responsive */
+        @media screen and (max-width: 768px) {
+            .nav-links { gap: 15px; font-size: 0.8rem; }
+            .hero-name { font-size: 2.5rem; }
+            nav { padding: 10px 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="nav-container">
+            <ul class="nav-links">
+                <li><a href="#parcours">Parcours</a></li>
+                <li><a href="#competences">Compétences</a></li>
+                <li><a href="#connaissances">Connaissances Info</a></li>
+                <li><a href="#experiences">Expériences</a></li>
+                <li><a href="#projets">Projets</a></li>
+                <li><a href="#interets">Centres d'intérêts</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <header>
+        <div class="container">
+            <h1 class="hero-name">Antoine USAL</h1>
+            <h2 class="hero-subtitle" id="typing-text"></h2>
+            <p style="max-width: 600px; color: #94a3b8; margin-top: 20px;">
+                [cite_start]Étudiant en informatique passionné et curieux[cite: 5, 6].
+            </p>
+        </div>
+    </header>
+
+    <section id="parcours" class="reveal">
+        <div class="container">
+            <h2 class="section-title">Parcours Scolaire</h2>
+            <div class="timeline-box">
+                <div class="timeline-item">
+                    <span style="color: var(--primary);">2024 - 2027</span>
+                    <h3>BUT Informatique (Parcours A)</h3>
+                    <p style="color: var(--text-muted);">En cours</p>
+                </div>
+                <div class="timeline-item">
+                    <span style="color: var(--primary);">2023 - 2024</span>
+                    <h3>Baccalauréat Général</h3>
+                    <p style="color: var(--text-muted);">Spécialités Mathématiques et NSI - Lycée Kernanec</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="competences" style="background-color: #162033;" class="reveal">
+        <div class="container">
+            <h2 class="section-title">Compétences (Savoir-être)</h2>
+            <div class="skills-wrapper">
+                <span class="soft-tag">Ponctuel</span>
+                <span class="soft-tag">Curieux</span>
+                <span class="soft-tag">Motivé</span>
+                <span class="soft-tag">Passionné par l'informatique</span>
+                <span class="soft-tag">Envie constante d'apprendre</span>
+            </div>
+        </div>
+    </section>
+
+    <section id="connaissances" class="reveal">
+        <div class="container">
+            <h2 class="section-title">Connaissances Informatique</h2>
+            <div class="skills-wrapper">
+                <span class="tech-tag">HTML / CSS</span>
+                <span class="tech-tag">Java</span>
+                <span class="tech-tag">Python</span>
+                <span class="tech-tag">Pharo</span>
+                <span class="tech-tag">Machine Virtuelle</span>
+                <span class="tech-tag">Outils Numériques</span>
+            </div>
+        </div>
+    </section>
+
+    <section id="experiences" style="background-color: #162033;" class="reveal">
+        <div class="container">
+            <h2 class="section-title">Expériences</h2>
+            <div class="grid-container">
+                <div class="card">
+                    <span class="card-type">Association</span>
+                    <h3>Vice-président d'une association informatique</h3>
+                    <p>Gestion d'équipe, organisation et responsabilités associatives.</p>
+                </div>
+                <div class="card">
+                    <span class="card-type">Professionnel</span>
+                    <h3>Stage en laboratoire de recherche</h3>
+                    <p>Découverte du monde de la recherche et immersion professionnelle.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="projets" class="reveal">
+        <div class="container">
+            <h2 class="section-title">Projets</h2>
+            <div class="grid-container">
+                <div class="card" style="border-left-color: var(--accent);">
+                    <span class="card-type">Personnel</span>
+                    <h3>Bot Discord</h3>
+                    <p>Développement et conception d'un robot pour la plateforme Discord.</p>
+                </div>
+                <div class="card" style="border-left-color: var(--accent);">
+                    <span class="card-type">Concours</span>
+                    <h3>Nuit du Code</h3>
+                    <p>Participation à deux reprises. Challenge de programmation.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="interets" style="background-color: #162033;" class="reveal">
+        <div class="container">
+            <h2 class="section-title">Centres d'intérêts</h2>
+            <div class="skills-wrapper">
+                <span class="tech-tag" style="border-color: #475569; color: #cbd5e1;">Badminton</span>
+                <span class="tech-tag" style="border-color: #475569; color: #cbd5e1;">Programmation</span>
+                <span class="tech-tag" style="border-color: #475569; color: #cbd5e1;">Jeux vidéo</span>
+                <span class="tech-tag" style="border-color: #475569; color: #cbd5e1;">Lecture et écriture</span>
+                <span class="tech-tag" style="border-color: #475569; color: #cbd5e1;">Astronomie</span>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>Antoine USAL - 59650 Villeneuve-d'Ascq</p>
+            <p><a href="mailto:antoineusa15962@gmail.com" style="color: var(--primary);">antoineusa15962@gmail.com</a></p>
+            <p style="margin-top:20px; font-style: italic; opacity: 0.6;">"Je ne perds jamais soit je gagne, soit j'apprends."</p>
+        </div>
+    </footer>
+
+    <script>
+        // Typing Effect
+        const text = "Étudiant en Informatique";
+        let index = 0;
+        function typeWriter() {
+            if (index < text.length) {
+                document.getElementById('typing-text').innerHTML += text.charAt(index);
+                index++;
+                setTimeout(typeWriter, 100);
+            }
+        }
+
+        // Scroll Reveal
+        function reveal() {
+            var reveals = document.querySelectorAll(".reveal");
+            for (var i = 0; i < reveals.length; i++) {
+                var windowHeight = window.innerHeight;
+                var elementTop = reveals[i].getBoundingClientRect().top;
+                if (elementTop < windowHeight - 100) {
+                    reveals[i].classList.add("active");
+                }
+            }
+        }
+        window.addEventListener("scroll", reveal);
+        window.onload = typeWriter;
+    </script>
+</body>
+</html>
