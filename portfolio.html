@@ -9,6 +9,7 @@
         :root {
             --bg-color: #0f172a;
             --card-bg: #1e293b;
+            --card-hover: #2c3e50;
             --primary: #38bdf8;
             --accent: #818cf8;
             --text-main: #f1f5f9;
@@ -30,13 +31,13 @@
             color: var(--text-main);
             line-height: 1.6;
             overflow-x: hidden;
-            padding-top: 70px; /* Espace pour la navbar fixe */
+            padding-top: 70px;
         }
 
         a { text-decoration: none; color: inherit; transition: 0.3s; }
         ul { list-style: none; }
 
-        /* --- NAVIGATION BAR (NOUVEAU) --- */
+        /* --- NAVIGATION --- */
         nav {
             position: fixed;
             top: 0;
@@ -52,7 +53,7 @@
             max-width: 1200px;
             margin: 0 auto;
             display: flex;
-            justify-content: center; /* Centré comme demandé */
+            justify-content: center;
             align-items: center;
             padding: 0 20px;
         }
@@ -71,10 +72,7 @@
             position: relative;
         }
 
-        .nav-links a:hover, .nav-links a.active {
-            color: var(--primary);
-        }
-
+        .nav-links a:hover, .nav-links a.active { color: var(--primary); }
         .nav-links a::after {
             content: '';
             position: absolute;
@@ -85,10 +83,7 @@
             background-color: var(--primary);
             transition: width 0.3s;
         }
-
-        .nav-links a:hover::after {
-            width: 100%;
-        }
+        .nav-links a:hover::after { width: 100%; }
 
         /* --- LAYOUT UTILITIES --- */
         .container {
@@ -98,7 +93,7 @@
         }
 
         section {
-            padding: 90px 0; /* Un peu plus d'espace pour le scroll */
+            padding: 90px 0;
             border-bottom: 1px solid rgba(255,255,255,0.02);
         }
 
@@ -109,9 +104,9 @@
             color: var(--primary);
         }
 
-        /* --- HEADER & HERO --- */
+        /* --- HEADER --- */
         header {
-            min-height: 90vh; /* Ajusté */
+            min-height: 90vh;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -137,34 +132,31 @@
             font-family: monospace;
         }
 
-        /* --- SECTIONS SPECIFIQUES --- */
-        
-        /* Tags (pour Compétences et Connaissances) */
+        /* --- TAGS (Skills) --- */
         .skills-wrapper {
             display: flex;
             justify-content: center;
             flex-wrap: wrap;
             gap: 15px;
         }
-        
         .tech-tag {
             background: rgba(56, 189, 248, 0.1);
             border: 1px solid var(--primary);
             color: var(--primary);
-            padding: 10px 20px;
-            border-radius: 8px;
+            padding: 8px 16px;
+            border-radius: 6px;
             font-family: monospace;
+            font-size: 0.9rem;
         }
-
         .soft-tag {
             background: rgba(129, 140, 248, 0.1);
             border: 1px solid var(--accent);
             color: var(--accent);
-            padding: 10px 20px;
+            padding: 8px 16px;
             border-radius: 50px;
         }
-
-        /* Cards (pour Expériences et Projets) */
+        
+        /* --- CARDS & GRID --- */
         .grid-container {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
@@ -175,24 +167,59 @@
             background: var(--card-bg);
             padding: 30px;
             border-radius: 15px;
-            transition: 0.3s;
+            transition: all 0.3s ease;
             border-left: 4px solid var(--primary);
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        /* Lien cliquable sur toute la carte */
+        .card-link {
+            display: block;
+            height: 100%;
+            text-decoration: none;
         }
         
-        .card:hover { transform: translateY(-5px); box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
-        .card h3 { margin-bottom: 10px; font-size: 1.3rem; }
-        .card-type { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); margin-bottom: 10px; display: block; }
+        /* Effet hover spécifique aux projets cliquables */
+        .card-link:hover .card {
+            transform: translateY(-7px);
+            box-shadow: 0 10px 30px rgba(56, 189, 248, 0.15);
+            background-color: var(--card-hover);
+            border-left-color: var(--accent);
+        }
 
-        /* Timeline (Parcours) */
+        .card h3 { margin-bottom: 10px; font-size: 1.3rem; color: var(--text-main); }
+        .card p { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 15px; flex-grow: 1; }
+        
+        .card-type { 
+            font-size: 0.75rem; 
+            text-transform: uppercase; 
+            letter-spacing: 1px; 
+            color: var(--accent); 
+            margin-bottom: 8px; 
+            display: block; 
+            font-weight: bold;
+        }
+
+        .project-lang {
+            display: inline-block;
+            font-size: 0.8rem;
+            padding: 4px 10px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 4px;
+            color: var(--primary);
+            margin-top: auto; /* Pousse le tag vers le bas */
+            font-family: monospace;
+        }
+
+        /* --- TIMELINE --- */
         .timeline-box {
             border-left: 2px solid var(--card-bg);
             margin-left: 20px;
             padding-left: 30px;
         }
-        .timeline-item {
-            position: relative;
-            margin-bottom: 40px;
-        }
+        .timeline-item { position: relative; margin-bottom: 40px; }
         .timeline-item::before {
             content: '';
             position: absolute;
@@ -205,7 +232,7 @@
             box-shadow: 0 0 0 5px rgba(56, 189, 248, 0.2);
         }
 
-        /* Footer */
+        /* --- FOOTER --- */
         footer { text-align: center; padding: 50px 20px; background: #020617; }
 
         /* --- ANIMATIONS --- */
@@ -213,11 +240,9 @@
         .reveal { opacity: 0; transform: translateY(30px); transition: all 0.6s ease-in-out; }
         .reveal.active { opacity: 1; transform: translateY(0); }
 
-        /* Mobile Responsive */
         @media screen and (max-width: 768px) {
             .nav-links { gap: 15px; font-size: 0.8rem; }
             .hero-name { font-size: 2.5rem; }
-            nav { padding: 10px 0; }
         }
     </style>
 </head>
@@ -241,7 +266,7 @@
             <h1 class="hero-name">Antoine USAL</h1>
             <h2 class="hero-subtitle" id="typing-text"></h2>
             <p style="max-width: 600px; color: #94a3b8; margin-top: 20px;">
-                [cite_start]Étudiant en informatique passionné et curieux[cite: 5, 6].
+                Étudiant en informatique passionné et curieux.
             </p>
         </div>
     </header>
@@ -313,16 +338,43 @@
         <div class="container">
             <h2 class="section-title">Projets</h2>
             <div class="grid-container">
-                <div class="card" style="border-left-color: var(--accent);">
-                    <span class="card-type">Personnel</span>
-                    <h3>Bot Discord</h3>
-                    <p>Développement et conception d'un robot pour la plateforme Discord.</p>
-                </div>
-                <div class="card" style="border-left-color: var(--accent);">
-                    <span class="card-type">Concours</span>
-                    <h3>Nuit du Code</h3>
-                    <p>Participation à deux reprises. Challenge de programmation.</p>
-                </div>
+                
+                <a href="https://github.com/TheSky599/Bot-minage" target="_blank" class="card-link">
+                    <div class="card">
+                        <span class="card-type">Projet Perso</span>
+                        <h3>Bot Discord</h3>
+                        <p>Un petit jeu interactif où l’objectif est de récolter des ressources pour faire évoluer son équipement.</p>
+                        <span class="project-lang">Python</span>
+                    </div>
+                </a>
+
+                <a href="https://gitlab.univ-lille.fr/sae302/2025/J1_SAE3.3" target="_blank" class="card-link">
+                    <div class="card">
+                        <span class="card-type">Projet Universitaire</span>
+                        <h3>Labyfélemwane</h3>
+                        <p>Jeu de labyrinthe avec une génération unique de niveaux. Réalisé en groupe de 4 étudiants.</p>
+                        <span class="project-lang">Java</span>
+                    </div>
+                </a>
+
+                <a href="https://gitlab.univ-lille.fr/etu/2025-2026/s303/j-huard-usal" target="_blank" class="card-link">
+                    <div class="card">
+                        <span class="card-type">Projet Universitaire</span>
+                        <h3>Déploiement d’une application</h3>
+                        <p>Déploiement complet d'une application sur un serveur de l’IUT via des lignes de commandes.</p>
+                        <span class="project-lang">Shell / Bash</span>
+                    </div>
+                </a>
+
+                <a href="https://gitlab.univ-lille.fr/iut-info/p3.01/2025-2026/groupe-5" target="_blank" class="card-link">
+                    <div class="card">
+                        <span class="card-type">Game Jam / Groupe</span>
+                        <h3>Jeu de gestion</h3>
+                        <p>Jeu réalisé en temps limité avec une équipe inconnue. Gestion de ressources avec affichage dynamique en ASCII art.</p>
+                        <span class="project-lang">Java</span>
+                    </div>
+                </a>
+
             </div>
         </div>
     </section>
@@ -349,7 +401,6 @@
     </footer>
 
     <script>
-        // Typing Effect
         const text = "Étudiant en Informatique";
         let index = 0;
         function typeWriter() {
@@ -360,7 +411,6 @@
             }
         }
 
-        // Scroll Reveal
         function reveal() {
             var reveals = document.querySelectorAll(".reveal");
             for (var i = 0; i < reveals.length; i++) {
