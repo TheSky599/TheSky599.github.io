@@ -159,7 +159,8 @@
         /* --- CARDS & GRID --- */
         .grid-container {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            /* MODIFICATION: Force 2 colonnes (1fr 1fr) */
+            grid-template-columns: 1fr 1fr;
             gap: 25px;
         }
         
@@ -174,14 +175,12 @@
             height: 100%;
         }
 
-        /* Lien cliquable sur toute la carte */
         .card-link {
             display: block;
             height: 100%;
             text-decoration: none;
         }
         
-        /* Effet hover spécifique aux projets cliquables */
         .card-link:hover .card {
             transform: translateY(-7px);
             box-shadow: 0 10px 30px rgba(56, 189, 248, 0.15);
@@ -209,7 +208,7 @@
             background: rgba(255,255,255,0.05);
             border-radius: 4px;
             color: var(--primary);
-            margin-top: auto; /* Pousse le tag vers le bas */
+            margin-top: auto; 
             font-family: monospace;
         }
 
@@ -240,9 +239,12 @@
         .reveal { opacity: 0; transform: translateY(30px); transition: all 0.6s ease-in-out; }
         .reveal.active { opacity: 1; transform: translateY(0); }
 
+        /* --- MEDIA QUERIES (MOBILE) --- */
         @media screen and (max-width: 768px) {
             .nav-links { gap: 15px; font-size: 0.8rem; }
             .hero-name { font-size: 2.5rem; }
+            /* Sur mobile, on repasse à 1 colonne pour que ce soit lisible */
+            .grid-container { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -253,10 +255,9 @@
             <ul class="nav-links">
                 <li><a href="#parcours">Parcours</a></li>
                 <li><a href="#competences">Compétences</a></li>
-                <li><a href="#connaissances">Connaissances Info</a></li>
-                <li><a href="#experiences">Expériences</a></li>
+                <li><a href="#connaissances">Connaissances</a></li>
+                <li><a href="#interets">Intérêts</a></li> <li><a href="#experiences">Expériences</a></li>
                 <li><a href="#projets">Projets</a></li>
-                <li><a href="#interets">Centres d'intérêts</a></li>
             </ul>
         </div>
     </nav>
@@ -316,7 +317,20 @@
         </div>
     </section>
 
-    <section id="experiences" style="background-color: #162033;" class="reveal">
+    <section id="interets" style="background-color: #162033;" class="reveal">
+        <div class="container">
+            <h2 class="section-title">Centres d'intérêts</h2>
+            <div class="skills-wrapper">
+                <span class="tech-tag" style="border-color: #475569; color: #cbd5e1;">Badminton</span>
+                <span class="tech-tag" style="border-color: #475569; color: #cbd5e1;">Programmation</span>
+                <span class="tech-tag" style="border-color: #475569; color: #cbd5e1;">Jeux vidéo</span>
+                <span class="tech-tag" style="border-color: #475569; color: #cbd5e1;">Lecture et écriture</span>
+                <span class="tech-tag" style="border-color: #475569; color: #cbd5e1;">Astronomie</span>
+            </div>
+        </div>
+    </section>
+
+    <section id="experiences" class="reveal">
         <div class="container">
             <h2 class="section-title">Expériences</h2>
             <div class="grid-container">
@@ -334,7 +348,7 @@
         </div>
     </section>
 
-    <section id="projets" class="reveal">
+    <section id="projets" style="background-color: #162033;" class="reveal">
         <div class="container">
             <h2 class="section-title">Projets</h2>
             <div class="grid-container">
@@ -368,26 +382,13 @@
 
                 <a href="https://gitlab.univ-lille.fr/iut-info/p3.01/2025-2026/groupe-5" target="_blank" class="card-link">
                     <div class="card">
-                        <span class="card-type">Game Jam / Groupe</span>
+                        <span class="card-type">Projet Universitaire</span>
                         <h3>Jeu de gestion</h3>
                         <p>Jeu réalisé en temps limité avec une équipe inconnue. Gestion de ressources avec affichage dynamique en ASCII art.</p>
                         <span class="project-lang">Java</span>
                     </div>
                 </a>
 
-            </div>
-        </div>
-    </section>
-
-    <section id="interets" style="background-color: #162033;" class="reveal">
-        <div class="container">
-            <h2 class="section-title">Centres d'intérêts</h2>
-            <div class="skills-wrapper">
-                <span class="tech-tag" style="border-color: #475569; color: #cbd5e1;">Badminton</span>
-                <span class="tech-tag" style="border-color: #475569; color: #cbd5e1;">Programmation</span>
-                <span class="tech-tag" style="border-color: #475569; color: #cbd5e1;">Jeux vidéo</span>
-                <span class="tech-tag" style="border-color: #475569; color: #cbd5e1;">Lecture et écriture</span>
-                <span class="tech-tag" style="border-color: #475569; color: #cbd5e1;">Astronomie</span>
             </div>
         </div>
     </section>
