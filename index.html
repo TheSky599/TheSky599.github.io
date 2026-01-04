@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio - Antoine USAL</title>
+    <style>
+        /* --- 1. VARIABLES & RESET --- */
+        :root {
+            --bg-color: #0f172a;       
+            --card-bg: #1e293b;        
+            --card-hover: #2c3e50;     
+            --primary: #38bdf8;        
+            --accent: #818cf8;         
+            --text-main: #f1f5f9;      
+            --text-muted: #94a3b8;     
+            --nav-bg: rgba(15, 23, 42, 0.95);
+            --font-main: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            --hue-rotation: 0deg; 
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; filter: hue-rotate(var(--hue-rotation)); transition: filter 0.3s ease; }
+        body {
+            font-family: var(--font-main);
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.6;
+            overflow-x: hidden;
+            padding-top: 80px;
+        }
+
+        a { text-decoration: none; color: inherit; transition: 0.3s; }
+        ul { list-style: none; }
+
+        /* --- 2. NAVIGATION --- */
+        nav {
+            position: fixed; top: 0; left: 0; width: 100%;
+            background-color: var(--nav-bg);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 1000; padding: 15px 0; backdrop-filter: blur(5px);
+        }
+        .nav-container { max-width: 1200px; margin: 0 auto; display: flex; justify-content: center; align-items: center; padding: 0 20px; }
+        .nav-links { display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; align-items: center; }
+        
+        .nav-links a:not(.btn-style) { 
+            font-size: 0.9rem; font-weight: 500; color: var(--text-muted); position: relative; padding: 5px 0; 
+        }
+        .nav-links a:not(.btn-style):hover { color: var(--primary); }
+
+        /* Style des boutons dans le menu */
+        .contact-btn { 
+            border: 1px solid var(--primary); 
+            padding: 6px 18px !important; 
+            border-radius: 20px; 
+            color: var(--primary) !important; 
+            font-weight: bold; 
+            font-size: 0.9rem;
+        }
+        .contact-btn:hover { background-color: var(--primary); color: var(--bg-color) !important; }
+
+        .cv-nav-btn {
+            background: rgba(255,255,255,0.1);
+            padding: 6px 18px !important;
+            border-radius: 20px;
+            color: var(--text-main) !important;
+            font-weight: bold;
+            font-size: 0.9rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            cursor: pointer;
+        }
+        .cv-nav-btn:hover { background: rgba(255,255,255,0.2); color: #fff !important; }
+
+        /* --- 3. STRUCTURE --- */
+        .container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+        section { padding: 90px 0; border-bottom: 1px solid rgba(255,255,255,0.02); position: relative; z-index: 1; }
+        .section-title { font-size: 2.2rem; margin-bottom: 50px; text-align: center; color: var(--primary); }
+
+        /* --- 4. HERO & NUAGE DE TAGS --- */
+        header {
+            min-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            overflow: hidden; 
+            background: radial-gradient(circle at center, #1e293b 0%, transparent 70%);
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 10;
+            background: rgba(15, 23, 42, 0.3);
+            padding: 40px; 
+            border-radius: 50%;
+            backdrop-filter: blur(2px);
+        }
+
+        .hero-name {
+            font-size: 4.5rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            background: linear-gradient(to right, #fff, var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 30px rgba(56, 189, 248, 0.3);
+        }
+
+        .hero-subtitle {
+            font-size: 1.5rem;
+            color: var(--primary);
+            font-family: monospace;
+            min-height: 1.6em;
+        }
+
+        /* --- STYLES DU NUAGE ORBITAL --- */
+        .tag-cloud-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .orbit-item {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            white-space: nowrap;
+            padding: 8px 16px; 
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-family: monospace;
+            font-weight: bold;
+            box-shadow: 0 0 15px rgba(0,0,0,0.6);
+        }
+
+        .tag-soft { background: rgba(129, 140, 248, 0.15); border: 1px solid var(--accent); color: var(--accent); }
+        .tag-tech { background: rgba(56, 189, 248, 0.15); border: 1px solid var(--primary); color: var(--primary); }
+        .tag-interest { background: rgba(148, 163, 184, 0.15); border: 1px solid #64748b; color: #cbd5e1; }
+
+        @keyframes orbit-anim {
+            from { transform: rotate(0deg) translateX(var(--orbit-radius)) rotate(0deg); }
+            to   { transform: rotate(360deg) translateX(var(--orbit-radius)) rotate(-360deg); }
+        }
+
+        /* --- STYLE A PROPOS --- */
+        .about-text {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto;
+            font-size: 1.15rem;
+            color: var(--text-muted);
+            line-height: 1.9;
+        }
+        .highlight { color: var(--primary); font-weight: bold; }
+
+        /* --- MODAL (POPUP) --- */
+        .modal {
+            display: none; 
+            position: fixed;
+            z-index: 5000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: rgba(0,0,0,0.85);
+            backdrop-filter: blur(5px);
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s;
+        }
+
+        .modal-content {
+            position: relative;
+            background-color: #fff;
+            margin: auto;
+            padding: 0;
+            border: 1px solid var(--primary);
+            width: 90%;
+            max-width: 1000px;
+            height: 85vh;
+            border-radius: 10px;
+            box-shadow: 0 0 50px rgba(56, 189, 248, 0.2);
+            overflow: hidden;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            color: #333;
+            font-size: 30px;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 25;
+            transition: 0.2s;
+            background: rgba(255,255,255,0.8);
+            padding: 0 10px;
+            border-radius: 5px;
+        }
+        .close-modal:hover { color: var(--primary); background: #fff; }
+
+        .modal-download-btn {
+            position: absolute;
+            top: 15px;
+            right: 70px;
+            background: var(--primary);
+            color: #0f172a;
+            padding: 8px 15px;
+            border-radius: 5px;
+            font-weight: bold;
+            text-decoration: none;
+            z-index: 25;
+            font-size: 0.9rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+        .modal-download-btn:hover { background: var(--accent); color: white; }
+
+        object { width: 100%; height: 100%; display: block; }
+
+        .fallback-msg {
+            text-align: center;
+            padding: 50px;
+            color: #333;
+            font-family: sans-serif;
+            position: absolute;
+            top: 40%;
+            width: 100%;
+            z-index: 1;
+        }
+
+        /* --- 5. CARTES & AUTRES --- */
+        .timeline-box { border-left: 3px solid var(--card-bg); margin-left: 20px; padding-left: 30px; }
+        .timeline-item { position: relative; margin-bottom: 40px; }
+        .timeline-item::before {
+            content: ''; position: absolute; left: -38px; top: 5px; width: 12px; height: 12px;
+            border-radius: 50%; background: var(--primary); box-shadow: 0 0 0 5px rgba(56, 189, 248, 0.2);
+        }
+
+        .grid-container { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; }
+        .card-link { display: block; height: 100%; }
+        .card {
+            background: var(--card-bg); padding: 30px; border-radius: 12px; border-left: 4px solid var(--primary);
+            transition: 0.3s; height: 100%; display: flex; flex-direction: column;
+        }
+        .card:hover { transform: translateY(-7px); background-color: var(--card-hover); border-left-color: var(--accent); }
+        .card h3 { margin-bottom: 10px; color: var(--text-main); }
+        .card p { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 15px; flex-grow: 1; }
+        .card-type { font-size: 0.75rem; text-transform: uppercase; color: var(--accent); margin-bottom: 8px; font-weight: bold; display: block; }
+        .project-lang { display: inline-block; margin-top: auto; font-size: 0.8rem; padding: 4px 10px; background: rgba(255,255,255,0.05); border-radius: 4px; color: var(--primary); font-family: monospace; align-self: flex-start; }
+
+        .contact-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; text-align: center; }
+        .contact-item { background: var(--card-bg); padding: 25px; border-radius: 10px; border: 1px solid transparent; transition: 0.3s; }
+        .contact-item:hover { border-color: var(--primary); transform: translateY(-5px); }
+        .contact-icon { font-size: 2rem; display: block; margin-bottom: 10px; }
+
+        footer { background-color: #020617; text-align: center; padding: 40px 20px; color: var(--text-muted); border-top: 1px solid #1e293b; }
+        #backToTop, #clickCounter { position: fixed; z-index: 2000; cursor: pointer; transition: 0.3s; outline: none; }
+        #backToTop { bottom: 30px; right: 30px; display: none; background: var(--primary); color: var(--bg-color); padding: 15px; border-radius: 50%; border: none; }
+        #clickCounter { bottom: 30px; left: 30px; background: rgba(30, 41, 59, 0.9); color: var(--primary); padding: 12px 25px; border-radius: 30px; border: 2px solid var(--primary); }
+
+        .reveal { opacity: 0; transform: translateY(30px); transition: 0.8s ease-out; }
+        .reveal.active { opacity: 1; transform: translateY(0); }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+        .hero-name { animation: fadeIn 1s ease-out; }
+
+        @media screen and (max-width: 768px) {
+            .grid-container { grid-template-columns: 1fr; }
+            .hero-name { font-size: 2.8rem; }
+            .orbit-item { font-size: 0.7rem; padding: 4px 10px; }
+            .nav-links { gap: 10px; }
+            .cv-nav-btn { font-size: 0.8rem; padding: 5px 10px !important; }
+            .contact-btn { font-size: 0.8rem; padding: 5px 10px !important; }
+            .about-text { font-size: 1rem; text-align: left; }
+        }
+    </style>
+</head>
+<body>
+
+    <button id="backToTop">⬆</button>
+    <button id="clickCounter">Clics : 0</button>
+
+    <div id="cvModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <a href="cv.pdf" download="CV_Antoine_Usal.pdf" class="modal-download-btn">💾 Télécharger</a>
+            <div class="fallback-msg">
+                <p>Si le document ne s'affiche pas, <a href="cv.pdf" target="_blank" style="color:blue; text-decoration:underline;">cliquez ici pour le voir</a>.</p>
+            </div>
+            <object id="cvObject" data="" type="application/pdf" width="100%" height="100%" style="position:relative; z-index:10;">
+                <p style="text-align:center; padding-top:100px; color:#333;">Votre navigateur ne peut pas afficher ce PDF directement.</p>
+            </object>
+        </div>
+    </div>
+
+    <nav>
+        <div class="nav-container">
+            <ul class="nav-links">
+                <li><a href="#top">Accueil</a></li>
+                <li><a href="#about">À propos</a></li>
+                <li><a href="#parcours">Formation</a></li>
+                <li><a href="#experiences">Expériences</a></li>
+                <li><a href="#projets">Projets</a></li>
+                <li><a href="#contact" class="contact-btn btn-style">Contact</a></li>
+                <li><a id="navCvBtn" class="cv-nav-btn btn-style">Mon CV</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <header id="top">
+        <div class="tag-cloud-container" id="tagCloud"></div>
+        <div class="hero-content">
+            <h1 class="hero-name">Antoine USAL</h1>
+            <h2 class="hero-subtitle" id="typing-text"></h2>
+        </div>
+    </header>
+
+    <section id="about" class="reveal">
+        <div class="container">
+            <h2 class="section-title">À propos de moi</h2>
+            <div class="about-text">
+                <p>
+                    Actuellement étudiant en deuxième année de <strong>BUT Informatique</strong> à l'IUT de Villeneuve-d'Ascq, je suis passionné par le développement logiciel et les technologies numériques. <span class="highlight">Curieux</span> et <span class="highlight">motivé</span>, je m'investis pleinement aussi bien dans mes études que dans la vie associative en tant que <strong>vice-président</strong> d'une association étudiante.
+                </p>
+                <br>
+                <p>
+                    Toujours prêt à apprendre, je cherche à mettre ma <span class="highlight">rigueur</span> et mon <span class="highlight">esprit d'équipe</span> au service de projets concrets. Mon parcours m'a déjà permis de découvrir le monde de la <strong>recherche en laboratoire</strong> et de développer des compétences variées (Java, Python, Web), renforçant ainsi mon envie d'évoluer et d'innover dans ce secteur dynamique.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section id="parcours" class="reveal">
+        <div class="container">
+            <h2 class="section-title">Formation</h2>
+            <div class="timeline-box">
+                <div class="timeline-item">
+                    <span style="color: var(--primary); font-weight:bold;">2024 - 2027</span>
+                    <h3>BUT Informatique (Parcours A)</h3>
+                    <p style="color: var(--text-muted);">IUT de Villeneuve-d'Ascq</p>
+                </div>
+                <div class="timeline-item">
+                    <span style="color: var(--primary); font-weight:bold;">2023 - 2024</span>
+                    <h3>Baccalauréat Général</h3>
+                    <p style="color: var(--text-muted);">Spécialités Mathématiques et NSI - Lycée Kernanec</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="experiences" class="reveal">
+        <div class="container">
+            <h2 class="section-title">Expériences</h2>
+            <div class="grid-container">
+                <div class="card">
+                    <span class="card-type">Association</span>
+                    <h3>Vice-président d'une association informatique</h3>
+                    <p>Gestion d'équipe, organisation et responsabilités associatives.</p>
+                </div>
+                <div class="card">
+                    <span class="card-type">Professionnel</span>
+                    <h3>Stage en laboratoire de recherche</h3>
+                    <p>Découverte du monde de la recherche et immersion professionnelle.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="projets" style="background-color: #162033;" class="reveal">
+        <div class="container">
+            <h2 class="section-title">Projets</h2>
+            <div class="grid-container">
+                <a href="https://github.com/TheSky599/Bot-minage" target="_blank" class="card-link">
+                    <div class="card">
+                        <span class="card-type">Projet Perso</span>
+                        <h3>Bot Discord</h3>
+                        <p>Jeu interactif : récolte de ressources pour évoluer son équipement.</p>
+                        <span class="project-lang">Python</span>
+                    </div>
+                </a>
+                <a href="https://gitlab.univ-lille.fr/sae302/2025/J1_SAE3.3" target="_blank" class="card-link">
+                    <div class="card">
+                        <span class="card-type">Projet Universitaire</span>
+                        <h3>Labyfélemwane</h3>
+                        <p>Jeu de labyrinthe avec génération unique de niveaux.</p>
+                        <span class="project-lang">Java</span>
+                    </div>
+                </a>
+                <a href="https://gitlab.univ-lille.fr/etu/2025-2026/s303/j-huard-usal" target="_blank" class="card-link">
+                    <div class="card">
+                        <span class="card-type">Projet Universitaire</span>
+                        <h3>Déploiement d’une application</h3>
+                        <p>Déploiement sur serveur IUT via commandes Shell.</p>
+                        <span class="project-lang">Shell / Bash</span>
+                    </div>
+                </a>
+                <a href="https://gitlab.univ-lille.fr/iut-info/p3.01/2025-2026/groupe-5" target="_blank" class="card-link">
+                    <div class="card">
+                        <span class="card-type">Projet Transverse</span>
+                        <h3>Jeu de gestion</h3>
+                        <p>Gestion de ressources, affichage dynamique en ASCII art.</p>
+                        <span class="project-lang">Java</span>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="reveal">
+        <div class="container">
+            <h2 class="section-title">Me Contacter</h2>
+            <div class="contact-grid">
+                <div class="contact-item">
+                    <span class="contact-icon">📞</span>
+                    <p>Téléphone</p>
+                    <a href="tel:+33602282011" class="contact-text">06 02 28 20 11</a>
+                </div>
+                <div class="contact-item">
+                    <span class="contact-icon">📧</span>
+                    <p>Email</p>
+                    <a href="mailto:antoine.usal.etu@univ-lille.fr" class="contact-text">antoine.usal.etu@univ-lille.fr</a>
+                </div>
+                <div class="contact-item">
+                    <span class="contact-icon">📍</span>
+                    <p>Adresse</p>
+                    <span class="contact-text" style="color: var(--text-main);">59650 Villeneuve-d'Ascq</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>"Je ne perds jamais soit je gagne, soit j'apprends."</p>
+            <p style="margin-top:10px; opacity:0.5;">- Nelson Mandela -</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // --- 1. GESTION DE LA MODALE ---
+            const modal = document.getElementById("cvModal");
+            const navCvBtn = document.getElementById("navCvBtn"); 
+            const btnClose = document.getElementsByClassName("close-modal")[0];
+            const cvObject = document.getElementById("cvObject");
+            
+            const pdfUrl = "cv.pdf"; 
+
+            navCvBtn.onclick = function() {
+                modal.style.display = "flex";
+                if(!cvObject.getAttribute('data')) {
+                    cvObject.setAttribute('data', pdfUrl);
+                }
+            }
+
+            btnClose.onclick = function() {
+                modal.style.display = "none";
+            }
+
+            window.onclick = function(event) {
+                if (event.target == modal) {
+                    modal.style.display = "none";
+                }
+            }
+
+            // --- 2. NUAGE DE TAGS ---
+            const tags = [
+                { text: "HTML / CSS", type: "tech" },
+                { text: "Java", type: "tech" },
+                { text: "Python", type: "tech" },
+                { text: "Pharo", type: "tech" },
+                { text: "Machine Virtuelle", type: "tech" },
+                { text: "Outils Numériques", type: "tech" },
+                { text: "Ponctuel", type: "soft" },
+                { text: "Curieux", type: "soft" },
+                { text: "Motivé", type: "soft" },
+                { text: "Passionné", type: "soft" },
+                { text: "Envie d'apprendre", type: "soft" },
+                { text: "Badminton", type: "interest" },
+                { text: "Jeux vidéo", type: "interest" },
+                { text: "Astronomie", type: "interest" }
+            ];
+
+            const container = document.getElementById('tagCloud');
+            const isMobile = window.innerWidth < 768;
+            const minRadius = isMobile ? 160 : 350; 
+            const maxRadius = isMobile ? 240 : 600; 
+
+            tags.forEach((tag, index) => {
+                const el = document.createElement('div');
+                el.classList.add('orbit-item');
+                el.classList.add('tag-' + tag.type);
+                el.innerText = tag.text;
+
+                const radius = Math.floor(Math.random() * (maxRadius - minRadius + 1) + minRadius);
+                const duration = Math.floor(Math.random() * 30 + 20);
+                const direction = Math.random() > 0.5 ? 'normal' : 'reverse';
+                const startDelay = Math.random() * -50; 
+
+                el.style.setProperty('--orbit-radius', radius + 'px');
+                el.style.animation = `orbit-anim ${duration}s linear infinite ${direction}`;
+                el.style.animationDelay = `${startDelay}s`;
+
+                container.appendChild(el);
+            });
+
+            // --- 3. TYPE WRITER ---
+            const text = "Étudiant en Informatique";
+            const typingElement = document.getElementById('typing-text');
+            let i = 0;
+            function typeWriter() {
+                if (i < text.length) {
+                    typingElement.innerHTML += text.charAt(i);
+                    i++;
+                    setTimeout(typeWriter, 100);
+                }
+            }
+            typeWriter();
+
+            // --- 4. UI GENERALE ---
+            const backToTopBtn = document.getElementById("backToTop");
+            const counterBtn = document.getElementById('clickCounter');
+            const reveals = document.querySelectorAll(".reveal");
+            let clicks = 0;
+            let hue = 0;
+
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 300) backToTopBtn.style.display = "block";
+                else backToTopBtn.style.display = "none";
+                
+                const windowHeight = window.innerHeight;
+                reveals.forEach((reveal) => {
+                    const elementTop = reveal.getBoundingClientRect().top;
+                    if (elementTop < windowHeight - 100) reveal.classList.add("active");
+                });
+            });
+
+            backToTopBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+            document.addEventListener('click', () => {
+                clicks++;
+                counterBtn.innerText = "Clics : " + clicks;
+                hue += 4; 
+                document.documentElement.style.setProperty('--hue-rotation', hue + 'deg');
+            });
+        });
+    </script>
+</body>
+</html>
